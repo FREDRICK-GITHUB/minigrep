@@ -2,20 +2,26 @@ use std::env;
 use std::fs;
 
 fn main() {
-    /* Creating an iterator which will the arguments supplied. Our 
-     collector in this case is of type - Vector */
     let args: Vec<String> = env::args().collect();
-    // dbg!(args);
-    let query = &args[1];
-    let file_path = &args[2];
+    let config = parse_config(&args);
+   
+    println!("Searching for {}",config.query);
+    println!("In file {}", config.file_path);
 
-    println!("Searching for {}",query);
-    println!("In file {}", file_path);
-
-    /* fs::read_to_string takes the file_path, opens that file, 
-    and returns a std::io::Result<String> of the file’s contents */
-    let contents = fs::read_to_string(file_path)
+    let contents = fs::read_to_string(config.file_path)
         .expect("Should have been able to read the file");
 
     println!("With text:\n{contents}");    
+}
+
+struct Config {
+    query: String,
+    file_path: String,
+}
+
+fn parse_config (args: &[String]) -> Config {
+    let query = &args[1].clone();
+    let file_path = &args[2].clone();
+
+    Config { query: String::from(query), file_path: String::from(file_path) }
 }
